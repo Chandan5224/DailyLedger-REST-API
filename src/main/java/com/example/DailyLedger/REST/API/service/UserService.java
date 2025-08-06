@@ -4,6 +4,7 @@ import com.example.DailyLedger.REST.API.entity.EmailVerificationToken;
 import com.example.DailyLedger.REST.API.entity.User;
 import com.example.DailyLedger.REST.API.repository.EmailTokenRepository;
 import com.example.DailyLedger.REST.API.repository.UserRepository;
+import com.example.DailyLedger.REST.API.utility.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.management.RuntimeErrorException;
 import java.time.LocalDateTime;
 import java.util.Random;
+
 @Service
 public class UserService {
     @Autowired
@@ -26,7 +28,7 @@ public class UserService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
 
-    public void registerUser(String name, String email,String password) {
+    public void registerUser(String name, String email, String password) {
         if (userRepo.existsByEmail(email)) {
             throw new RuntimeException("Email already exists");
         }
@@ -69,13 +71,13 @@ public class UserService {
         tokenRepo.delete(token); // optional: remove used token
     }
 
-    public void login(String email,String password){
+    public void login(String email, String password) {
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        if(!user.isVerified()){
-            throw new RuntimeException("Email is not verified");
+        if (!user.isVerified()) {
+            throw new CustomException("Email is not verified");
         }
-        if(!passwordEncoder.matches(password, user.getPassword())){
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Incorrect Password");
         }
     }

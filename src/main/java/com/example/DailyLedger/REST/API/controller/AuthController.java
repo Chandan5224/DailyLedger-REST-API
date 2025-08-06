@@ -3,6 +3,7 @@ package com.example.DailyLedger.REST.API.controller;
 
 import com.example.DailyLedger.REST.API.entity.UserResponse;
 import com.example.DailyLedger.REST.API.service.UserService;
+import com.example.DailyLedger.REST.API.utility.CustomException;
 import com.example.DailyLedger.REST.API.utility.ResponseBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,10 @@ public class AuthController {
             return ResponseEntity.ok(
                     ResponseBuilder.build("Registered Successfully", null, 200)
             );
+        } catch (CustomException e) {
+            return ResponseEntity
+                    .status(HttpStatus.valueOf(201))
+                    .body(ResponseBuilder.build(null, e.getMessage(), 201));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -48,6 +53,10 @@ public class AuthController {
             return ResponseEntity.ok(
                     ResponseBuilder.build("Login Successfully", null, 200)
             );
+        } catch (CustomException e) {
+            return ResponseEntity
+                    .status(HttpStatus.valueOf(201))
+                    .body(ResponseBuilder.build(null, e.getMessage(), 201));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
