@@ -31,7 +31,7 @@ public class AuthController {
         try {
             userService.registerUser(name, email, password);
             return ResponseEntity.ok(
-                    ResponseBuilder.build("Registered Successfully", null, 200)
+                    ResponseBuilder.build("OTP Sent Successfully", null, 200)
             );
         } catch (CustomException e) {
             return ResponseEntity
@@ -90,6 +90,20 @@ public class AuthController {
             userService.resendOTP(email);
             return ResponseEntity.ok(
                     ResponseBuilder.build("OTP sent Successfully", null, 200)
+            );
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseBuilder.build(null, e.getMessage(), 400));
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<UserResponse> resetPassword(@RequestParam String email,@RequestParam String password) {
+        try {
+            userService.resetPassword(email,password);
+            return ResponseEntity.ok(
+                    ResponseBuilder.build("Password Reset Successfully", null, 200)
             );
         } catch (Exception e) {
             return ResponseEntity

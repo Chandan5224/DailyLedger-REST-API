@@ -68,7 +68,7 @@ public class UserService {
         user.setVerified(true);
         userRepo.save(user);
 
-        tokenRepo.delete(token); // optional: remove used token
+//        tokenRepo.delete(token); // optional: remove used token
     }
 
     public void login(String email, String password) {
@@ -92,6 +92,14 @@ public class UserService {
         token.setExpiresAt(LocalDateTime.now().plusMinutes(5)); // Optional: Reset expiration
         tokenRepo.save(token);
         emailService.sendOtp(email, code);
+    }
+
+    public void resetPassword(String email, String password) {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(password));
+        userRepo.save(user);
     }
 
 
